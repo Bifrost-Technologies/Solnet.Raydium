@@ -11,19 +11,45 @@ using Solnet.Programs.Models;
 using Solnet.Rpc.Core.Http;
 using Solnet.Rpc.Core.Sockets;
 using Solnet.Rpc.Types;
+using Solnet.Rpc.Models;
 using Solnet.Wallet;
+using Solnet.Raydium.Library;
+using System.Diagnostics;
 
 namespace Solnet.Raydium.Client
 {
-    public partial class RaydiumAmmClient : TransactionalBaseClient<RaydiumAmmErrorKind>
+    public class RaydiumAmmClient
     {
-        public RaydiumAmmClient(IRpcClient rpcClient, IStreamingRpcClient streamingRpcClient, PublicKey programId) : base(rpcClient, streamingRpcClient, programId)
+        public IRpcClient RpcClient { get; set; }
+        public RaydiumAmmClient(IRpcClient rpcClient)
         {
+            RpcClient = rpcClient;
         }
 
+        public async Task<RequestResult<string>> BuildSignSend(Account trader, PublicKey feePayer, TransactionInstruction instr)
+        {
+            try
+            {
+                var blockhash = await RpcClient.GetLatestBlockHashAsync();
+                TransactionBuilder builder = new TransactionBuilder();
+                builder.SetFeePayer(feePayer);
+                builder.SetRecentBlockHash(blockhash.Result.Value.Blockhash);
+                builder.AddInstruction(instr);
+                var tx = builder.Build(trader);
+
+                return await RpcClient.SendTransactionAsync(tx);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+
+                return new RequestResult<string>() {Result = ex.Message };
+            }
+
+        }
         public async Task<ProgramAccountsResultWrapper<List<TargetOrders>>> GetTargetOrderssAsync(string programAddress, Commitment commitment = Commitment.Finalized)
         {
-            var list = new List<Solnet.Rpc.Models.MemCmp> { new Solnet.Rpc.Models.MemCmp { Bytes = TargetOrders.ACCOUNT_DISCRIMINATOR_B58, Offset = 0 } };
+            var list = new List<MemCmp> { new MemCmp { Bytes = TargetOrders.ACCOUNT_DISCRIMINATOR_B58, Offset = 0 } };
             var res = await RpcClient.GetProgramAccountsAsync(programAddress, commitment, memCmpList: list);
             if (!res.WasSuccessful || !(res.Result?.Count > 0))
                 return new ProgramAccountsResultWrapper<List<TargetOrders>>(res);
@@ -34,7 +60,7 @@ namespace Solnet.Raydium.Client
 
         public async Task<ProgramAccountsResultWrapper<List<Fees>>> GetFeessAsync(string programAddress, Commitment commitment = Commitment.Finalized)
         {
-            var list = new List<Solnet.Rpc.Models.MemCmp> { new Solnet.Rpc.Models.MemCmp { Bytes = Fees.ACCOUNT_DISCRIMINATOR_B58, Offset = 0 } };
+            var list = new List<MemCmp> { new MemCmp { Bytes = Fees.ACCOUNT_DISCRIMINATOR_B58, Offset = 0 } };
             var res = await RpcClient.GetProgramAccountsAsync(programAddress, commitment, memCmpList: list);
             if (!res.WasSuccessful || !(res.Result?.Count > 0))
                 return new ProgramAccountsResultWrapper<List<Fees>>(res);
@@ -45,7 +71,7 @@ namespace Solnet.Raydium.Client
 
         public async Task<ProgramAccountsResultWrapper<List<AmmInfo>>> GetAmmInfosAsync(string programAddress, Commitment commitment = Commitment.Finalized)
         {
-            var list = new List<Solnet.Rpc.Models.MemCmp> { new Solnet.Rpc.Models.MemCmp { Bytes = AmmInfo.ACCOUNT_DISCRIMINATOR_B58, Offset = 0 } };
+            var list = new List<MemCmp> { new MemCmp { Bytes = AmmInfo.ACCOUNT_DISCRIMINATOR_B58, Offset = 0 } };
             var res = await RpcClient.GetProgramAccountsAsync(programAddress, commitment, memCmpList: list);
             if (!res.WasSuccessful || !(res.Result?.Count > 0))
                 return new ProgramAccountsResultWrapper<List<AmmInfo>>(res);
@@ -81,136 +107,47 @@ namespace Solnet.Raydium.Client
             return new AccountResultWrapper<AmmInfo>(res, resultingAccount);
         }
 
-        public async Task<SubscriptionState> SubscribeTargetOrdersAsync(string accountAddress, Action<SubscriptionState, Solnet.Rpc.Messages.ResponseValue<Solnet.Rpc.Models.AccountInfo>, TargetOrders> callback, Commitment commitment = Commitment.Finalized)
+        public async Task<RequestResult<string>> SendInitializeAsync(InitializeAccounts accounts, byte nonce, ulong openTime, PublicKey feePayer, Account trader, PublicKey programId)
         {
-            SubscriptionState res = await StreamingRpcClient.SubscribeAccountInfoAsync(accountAddress, (s, e) =>
-            {
-                TargetOrders parsingResult = null;
-                if (e.Value?.Data?.Count > 0)
-                    parsingResult = TargetOrders.Deserialize(Convert.FromBase64String(e.Value.Data[0]));
-                callback(s, e, parsingResult);
-            }, commitment);
-            return res;
+            TransactionInstruction instr = RaydiumAmmProgram.Initialize(accounts, nonce, openTime, programId);      
+            return await BuildSignSend(trader, feePayer, instr);
         }
 
-        public async Task<SubscriptionState> SubscribeFeesAsync(string accountAddress, Action<SubscriptionState, Solnet.Rpc.Messages.ResponseValue<Solnet.Rpc.Models.AccountInfo>, Fees> callback, Commitment commitment = Commitment.Finalized)
+        public async Task<RequestResult<string>> SendInitialize2Async(Initialize2Accounts accounts, byte nonce, ulong openTime, ulong initPcAmount, ulong initCoinAmount, PublicKey feePayer, Account trader, PublicKey programId)
         {
-            SubscriptionState res = await StreamingRpcClient.SubscribeAccountInfoAsync(accountAddress, (s, e) =>
-            {
-                Fees parsingResult = null;
-                if (e.Value?.Data?.Count > 0)
-                    parsingResult = Fees.Deserialize(Convert.FromBase64String(e.Value.Data[0]));
-                callback(s, e, parsingResult);
-            }, commitment);
-            return res;
+            TransactionInstruction instr = RaydiumAmmProgram.Initialize2(accounts, nonce, openTime, initPcAmount, initCoinAmount, programId);
+            return await BuildSignSend(trader, feePayer, instr);
         }
 
-        public async Task<SubscriptionState> SubscribeAmmInfoAsync(string accountAddress, Action<SubscriptionState, Solnet.Rpc.Messages.ResponseValue<Solnet.Rpc.Models.AccountInfo>, AmmInfo> callback, Commitment commitment = Commitment.Finalized)
+        public async Task<RequestResult<string>> SendDepositAsync(DepositAccounts accounts, ulong maxCoinAmount, ulong maxPcAmount, ulong baseSide, PublicKey feePayer, Account trader, PublicKey programId)
         {
-            SubscriptionState res = await StreamingRpcClient.SubscribeAccountInfoAsync(accountAddress, (s, e) =>
-            {
-                AmmInfo parsingResult = null;
-                if (e.Value?.Data?.Count > 0)
-                    parsingResult = AmmInfo.Deserialize(Convert.FromBase64String(e.Value.Data[0]));
-                callback(s, e, parsingResult);
-            }, commitment);
-            return res;
+            TransactionInstruction instr = RaydiumAmmProgram.Deposit(accounts, maxCoinAmount, maxPcAmount, baseSide, programId);
+            return await BuildSignSend(trader, feePayer, instr);
         }
 
-        public async Task<RequestResult<string>> SendInitializeAsync(InitializeAccounts accounts, byte nonce, ulong openTime, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
+        public async Task<RequestResult<string>> SendWithdrawAsync(WithdrawAccounts accounts, ulong amount, PublicKey feePayer, Account trader, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.Initialize(accounts, nonce, openTime, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
+            TransactionInstruction instr = RaydiumAmmProgram.Withdraw(accounts, amount, programId);
+            return await BuildSignSend(trader, feePayer, instr);
         }
 
-        public async Task<RequestResult<string>> SendInitialize2Async(Initialize2Accounts accounts, byte nonce, ulong openTime, ulong initPcAmount, ulong initCoinAmount, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
+        public async Task<RequestResult<string>> SendWithdrawPnlAsync(WithdrawPnlAccounts accounts, PublicKey feePayer, Account trader, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.Initialize2(accounts, nonce, openTime, initPcAmount, initCoinAmount, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
+            TransactionInstruction instr = RaydiumAmmProgram.WithdrawPnl(accounts, programId);
+            return await BuildSignSend(trader, feePayer, instr);
         }
 
-        public async Task<RequestResult<string>> SendMonitorStepAsync(MonitorStepAccounts accounts, ushort planOrderLimit, ushort placeOrderLimit, ushort cancelOrderLimit, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
+        public async Task<RequestResult<string>> SendWithdrawSrmAsync(WithdrawSrmAccounts accounts, ulong amount, PublicKey feePayer, Account trader, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.MonitorStep(accounts, planOrderLimit, placeOrderLimit, cancelOrderLimit, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
+            TransactionInstruction instr = RaydiumAmmProgram.WithdrawSrm(accounts, amount, programId);
+            return await BuildSignSend(trader, feePayer, instr);
         }
 
-        public async Task<RequestResult<string>> SendDepositAsync(DepositAccounts accounts, ulong maxCoinAmount, ulong maxPcAmount, ulong baseSide, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
+        public async Task<RequestResult<string>> SendSwapAsync(SwapBaseInAccounts accounts, ulong amountIn, ulong minimumAmountOut, PublicKey feePayer, Account trader, PublicKey programId)
         {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.Deposit(accounts, maxCoinAmount, maxPcAmount, baseSide, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
+            TransactionInstruction instr = RaydiumAmmProgram.PerformSwap(accounts, amountIn, minimumAmountOut, programId);
+            return await BuildSignSend(trader, feePayer, instr);
         }
 
-        public async Task<RequestResult<string>> SendWithdrawAsync(WithdrawAccounts accounts, ulong amount, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
-        {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.Withdraw(accounts, amount, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
-        }
-
-        public async Task<RequestResult<string>> SendMigrateToOpenBookAsync(MigrateToOpenBookAccounts accounts, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
-        {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.MigrateToOpenBook(accounts, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
-        }
-
-
-        public async Task<RequestResult<string>> SendWithdrawPnlAsync(WithdrawPnlAccounts accounts, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
-        {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.WithdrawPnl(accounts, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
-        }
-
-        public async Task<RequestResult<string>> SendWithdrawSrmAsync(WithdrawSrmAccounts accounts, ulong amount, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
-        {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.WithdrawSrm(accounts, amount, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
-        }
-
-        public async Task<RequestResult<string>> SendSwapBaseInAsync(SwapBaseInAccounts accounts, ulong amountIn, ulong minimumAmountOut, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
-        {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.SwapBaseIn(accounts, amountIn, minimumAmountOut, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
-        }
-
-        public async Task<RequestResult<string>> SendPreInitializeAsync(PreInitializeAccounts accounts, byte nonce, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
-        {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.PreInitialize(accounts, nonce, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
-        }
-
-        public async Task<RequestResult<string>> SendSwapBaseOutAsync(SwapBaseOutAccounts accounts, ulong maxAmountIn, ulong amountOut, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
-        {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.SwapBaseOut(accounts, maxAmountIn, amountOut, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
-        }
-
-        public async Task<RequestResult<string>> SendSimulateInfoAsync(SimulateInfoAccounts accounts, byte param, SwapInstructionBaseIn swapBaseInValue, SwapInstructionBaseOut swapBaseOutValue, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
-        {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.SimulateInfo(accounts, param, swapBaseInValue, swapBaseOutValue, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
-        }
-
-        public async Task<RequestResult<string>> SendAdminCancelOrdersAsync(AdminCancelOrdersAccounts accounts, ushort limit, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
-        {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.AdminCancelOrders(accounts, limit, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
-        }
-
-        public async Task<RequestResult<string>> SendCreateConfigAccountAsync(CreateConfigAccountAccounts accounts, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
-        {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.CreateConfigAccount(accounts, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
-        }
-
-        public async Task<RequestResult<string>> SendUpdateConfigAccountAsync(UpdateConfigAccountAccounts accounts, byte param, PublicKey owner, PublicKey feePayer, Func<byte[], PublicKey, byte[]> signingCallback, PublicKey programId)
-        {
-            Solnet.Rpc.Models.TransactionInstruction instr = RaydiumAmmProgram.UpdateConfigAccount(accounts, param, owner, programId);
-            return await SignAndSendTransaction(instr, feePayer, signingCallback);
-        }
-
-        protected override Dictionary<uint, ProgramError<RaydiumAmmErrorKind>> BuildErrorsDictionary()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
