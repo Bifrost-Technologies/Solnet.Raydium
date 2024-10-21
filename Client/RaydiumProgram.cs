@@ -1,18 +1,26 @@
-﻿using Solnet.Programs.Abstract;
-using Solnet.Programs.Utilities;
-using Solnet.Rpc;
-using Solnet.Rpc.Builders;
-using Solnet.Rpc.Core.Http;
-using Solnet.Rpc.Core.Sockets;
-using Solnet.Rpc.Types;
+﻿using Solnet.Programs.Utilities;
 using Solnet.Rpc.Models;
 using Solnet.Wallet;
 using Solnet.Raydium.Types;
+using Solnet.Programs;
 
 namespace Solnet.Raydium.Client
 {
     public static class RaydiumAmmProgram
     {
+        public static TransactionInstruction SetCUlimit(ulong units)
+        {
+            List<AccountMeta> keys = new List<AccountMeta>();
+            byte[] data = new byte[9];
+            data.WriteU8(2, 0);
+            data.WriteU64(units, 1);
+            return new TransactionInstruction
+            {
+                ProgramId = ComputeBudgetProgram.ProgramIdKey,
+                Keys = keys,
+                Data = data
+            };
+        }
         public static TransactionInstruction Initialize(InitializeAccounts accounts, byte nonce, ulong openTime, PublicKey programId)
         {
             List<AccountMeta> keys = new()

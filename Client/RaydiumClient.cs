@@ -23,14 +23,22 @@ namespace Solnet.Raydium.Client
             RpcClient = rpcClient;
         }
 
-        public async Task<RequestResult<string>> BuildSignSend(Account trader, PublicKey feePayer, TransactionInstruction instr)
+        public async Task<RequestResult<string>> BuildSignSend(Account trader, PublicKey feePayer, TransactionInstruction instr, ulong computeprice = 0, ulong computebudget = 0)
         {
             try
             {
+               
                 var blockhash = await RpcClient.GetLatestBlockHashAsync();
                 TransactionBuilder builder = new TransactionBuilder();
                 builder.SetFeePayer(feePayer);
                 builder.SetRecentBlockHash(blockhash.Result.Value.Blockhash);
+                if (computebudget > 0 && computeprice > 0)
+                { 
+                    TransactionInstruction computeBudget = RaydiumAmmProgram.SetCUlimit(computebudget);
+                    TransactionInstruction computePrice = ComputeBudgetProgram.SetComputeUnitPrice(computeprice);
+                    builder.AddInstruction(computeBudget);
+                    builder.AddInstruction(computePrice);
+                }
                 builder.AddInstruction(instr);
                 var tx = builder.Build(trader);
 
@@ -138,7 +146,7 @@ namespace Solnet.Raydium.Client
             return await BuildSignSend(trader, feePayer, instr);
         }
 
-        public async Task<RequestResult<string>> SendSwapAsync(string _poolAddress, ulong amountIn, ulong minimumAmountOut, OrderSide side, PublicKey feePayer, Account trader)
+        public async Task<RequestResult<string>> SendSwapAsync(string _poolAddress, ulong amountIn, ulong minimumAmountOut, OrderSide side, PublicKey feePayer, Account trader, ulong computebudget = 0, ulong computeprice = 0)
         {
             PublicKey poolAddress = new PublicKey(_poolAddress);
             var ammInfo = await GetAmmInfoAsync(poolAddress);
@@ -181,7 +189,7 @@ namespace Solnet.Raydium.Client
                 swapBaseInAccounts.UerDestinationTokenAccount = quoteTokenAccount;
             }
             TransactionInstruction instr = RaydiumAmmProgram.PerformSwap(swapBaseInAccounts, amountIn, minimumAmountOut, programId);
-            return await BuildSignSend(trader, feePayer, instr);
+            return await BuildSignSend(trader, feePayer, instr, computeprice, computebudget);
         }
 
     }
