@@ -1,3 +1,7 @@
+
+![raydium-small](https://github.com/user-attachments/assets/4cc1bc3d-6f0c-4a52-bc59-4466ddc68c9f)
+
+
 # Solnet.Raydium
 A C# SDK & Client for Rayium's V4 Amm program on Solana
 
