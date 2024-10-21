@@ -20,11 +20,11 @@ namespace Solnet.Raydium
         public static ulong ACCOUNT_DISCRIMINATOR => 16712735355329896817UL;
         public static ReadOnlySpan<byte> ACCOUNT_DISCRIMINATOR_BYTES => new byte[] { 113, 225, 140, 255, 65, 144, 239, 231 };
         public static string ACCOUNT_DISCRIMINATOR_B58 => "L3nkuN7DJxn";
-        public ulong[] Owner { get; set; }
+        public ulong[]? Owner { get; set; }
 
-        public TargetOrder[] BuyOrders { get; set; }
+        public TargetOrder[]? BuyOrders { get; set; }
 
-        public ulong[] Padding1 { get; set; }
+        public ulong[]? Padding1 { get; set; }
 
         public BigInteger TargetX { get; set; }
 
@@ -46,13 +46,13 @@ namespace Solnet.Raydium
 
         public BigInteger CalcPnlY { get; set; }
 
-        public TargetOrder[] SellOrders { get; set; }
+        public TargetOrder[]? SellOrders { get; set; }
 
-        public ulong[] Padding2 { get; set; }
+        public ulong[]? Padding2 { get; set; }
 
-        public ulong[] ReplaceBuyClientId { get; set; }
+        public ulong[]? ReplaceBuyClientId { get; set; }
 
-        public ulong[] ReplaceSellClientId { get; set; }
+        public ulong[]? ReplaceSellClientId { get; set; }
 
         public ulong LastOrderNumerator { get; set; }
 
@@ -66,7 +66,7 @@ namespace Solnet.Raydium
 
         public ulong ValidSellOrderNum { get; set; }
 
-        public ulong[] Padding3 { get; set; }
+        public ulong[]? Padding3 { get; set; }
 
         public BigInteger FreeSlotBits { get; set; }
 
@@ -195,17 +195,13 @@ namespace Solnet.Raydium
         public ulong SwapFeeNumerator { get; set; }
 
         public ulong SwapFeeDenominator { get; set; }
-        public static Fees Deserialize(ReadOnlySpan<byte> _data)
+        public static Fees? Deserialize(ReadOnlySpan<byte> _data)
         {
             int offset = 0;
-            ulong accountHashValue = _data.GetU64(offset);
             offset += 8;
+            ulong accountHashValue = _data.GetU64(offset);
             var result = new Fees();
-            if (accountHashValue != ACCOUNT_DISCRIMINATOR)
-            {
-                result = null;
-                return result;
-            }
+
 
             result.MinSeparateNumerator = _data.GetU64(offset);
             offset += 8;
@@ -228,15 +224,7 @@ namespace Solnet.Raydium
         public static int Deserialize(ReadOnlySpan<byte> _data, out Fees result,int initialOffset = 0)
         {
             int offset = initialOffset;
-            ulong accountHashValue = _data.GetU64(offset);
-            offset += 8;
             result = new Fees();
-            if (accountHashValue != ACCOUNT_DISCRIMINATOR)
-            {
-                result = null;
-                return initialOffset;
-            }
-
             result.MinSeparateNumerator = _data.GetU64(offset);
             offset += 8;
             result.MinSeparateDenominator = _data.GetU64(offset);
@@ -253,7 +241,7 @@ namespace Solnet.Raydium
             offset += 8;
             result.SwapFeeDenominator = _data.GetU64(offset);
             offset += 8;
-            return initialOffset - offset;
+            return offset - initialOffset;
         }
     }
 
@@ -294,50 +282,43 @@ namespace Solnet.Raydium
 
         public ulong SysDecimalValue { get; set; }
 
-        public Fees Fees { get; set; }
+        public Fees? Fees { get; set; }
 
-        public OutPutData OutPut { get; set; }
+        public OutPutData? OutPut { get; set; }
 
-        public PublicKey TokenCoin { get; set; }
+        public PublicKey? BaseVault { get; set; }
 
-        public PublicKey TokenPc { get; set; }
+        public PublicKey? QuoteVault { get; set; }
 
-        public PublicKey CoinMint { get; set; }
+        public PublicKey? BaseMint { get; set; }
 
-        public PublicKey PcMint { get; set; }
+        public PublicKey? QuoteMint { get; set; }
 
-        public PublicKey LpMint { get; set; }
+        public PublicKey? LpMint { get; set; }
 
-        public PublicKey OpenOrders { get; set; }
+        public PublicKey? OpenOrders { get; set; }
 
-        public PublicKey Market { get; set; }
+        public PublicKey? Market { get; set; }
 
-        public PublicKey SerumDex { get; set; }
+        public PublicKey? SerumDex { get; set; }
 
-        public PublicKey TargetOrders { get; set; }
+        public PublicKey? TargetOrders { get; set; }
 
-        public PublicKey WithdrawQueue { get; set; }
+        public PublicKey? WithdrawQueue { get; set; }
 
-        public PublicKey TokenTempLp { get; set; }
+        public PublicKey? TokenTempLp { get; set; }
 
-        public PublicKey AmmOwner { get; set; }
+        public PublicKey? AmmOwner { get; set; }
 
         public ulong LpAmount { get; set; }
 
         public ulong ClientOrderId { get; set; }
 
-        public ulong[] Padding { get; set; }
+        public ulong[]? Padding { get; set; }
 
         public static AmmInfo Deserialize(ReadOnlySpan<byte> _data)
         {
             int offset = 0;
-            ulong accountHashValue = _data.GetU64(offset);
-            offset += 8;
-            if (accountHashValue != ACCOUNT_DISCRIMINATOR)
-            {
-                return null;
-            }
-
             AmmInfo result = new AmmInfo();
             result.Status = _data.GetU64(offset);
             offset += 8;
@@ -375,13 +356,13 @@ namespace Solnet.Raydium
             result.Fees = resultFees;
             offset += OutPutData.Deserialize(_data, offset, out var resultOutPut);
             result.OutPut = resultOutPut;
-            result.TokenCoin = _data.GetPubKey(offset);
+            result.BaseVault = _data.GetPubKey(offset);
             offset += 32;
-            result.TokenPc = _data.GetPubKey(offset);
+            result.QuoteVault = _data.GetPubKey(offset);
             offset += 32;
-            result.CoinMint = _data.GetPubKey(offset);
+            result.BaseMint = _data.GetPubKey(offset);
             offset += 32;
-            result.PcMint = _data.GetPubKey(offset);
+            result.QuoteMint = _data.GetPubKey(offset);
             offset += 32;
             result.LpMint = _data.GetPubKey(offset);
             offset += 32;
@@ -409,7 +390,8 @@ namespace Solnet.Raydium
                 result.Padding[resultPaddingIdx] = _data.GetU64(offset);
                 offset += 8;
             }
-
+            Console.WriteLine(offset);
+            Console.WriteLine(_data.Length.ToString());
             return result;
         }
     }

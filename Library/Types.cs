@@ -14,570 +14,369 @@ using Solnet.Wallet;
 
 namespace Solnet.Raydium.Types
 {
+    public enum OrderSide
+    {
+        Buy,
+        Sell
+    }
     public class InitializeAccounts
     {
-        public PublicKey TokenProgram { get; set; }
+        public PublicKey? TokenProgram { get; set; }
 
-        public PublicKey SystemProgram { get; set; }
+        public PublicKey? SystemProgram { get; set; }
 
-        public PublicKey Rent { get; set; }
+        public PublicKey? Rent { get; set; }
 
-        public PublicKey Amm { get; set; }
+        public PublicKey? Amm { get; set; }
 
-        public PublicKey AmmAuthority { get; set; }
+        public PublicKey? AmmAuthority { get; set; }
 
-        public PublicKey AmmOpenOrders { get; set; }
+        public PublicKey? AmmOpenOrders { get; set; }
 
-        public PublicKey LpMintAddress { get; set; }
+        public PublicKey? LpMintAddress { get; set; }
 
-        public PublicKey CoinMintAddress { get; set; }
+        public PublicKey? CoinMintAddress { get; set; }
 
-        public PublicKey PcMintAddress { get; set; }
+        public PublicKey? PcMintAddress { get; set; }
 
-        public PublicKey PoolCoinTokenAccount { get; set; }
+        public PublicKey? PoolCoinTokenAccount { get; set; }
 
-        public PublicKey PoolPcTokenAccount { get; set; }
+        public PublicKey? PoolPcTokenAccount { get; set; }
 
-        public PublicKey PoolWithdrawQueue { get; set; }
+        public PublicKey? PoolWithdrawQueue { get; set; }
 
-        public PublicKey PoolTargetOrdersAccount { get; set; }
+        public PublicKey? PoolTargetOrdersAccount { get; set; }
 
-        public PublicKey UserLpTokenAccount { get; set; }
+        public PublicKey? UserLpTokenAccount { get; set; }
 
-        public PublicKey PoolTempLpTokenAccount { get; set; }
+        public PublicKey? PoolTempLpTokenAccount { get; set; }
 
-        public PublicKey SerumProgram { get; set; }
+        public PublicKey? SerumProgram { get; set; }
 
-        public PublicKey SerumMarket { get; set; }
+        public PublicKey? SerumMarket { get; set; }
 
-        public PublicKey UserWallet { get; set; }
+        public PublicKey? UserWallet { get; set; }
     }
 
     public class Initialize2Accounts
     {
-        public PublicKey TokenProgram { get; set; }
+        public PublicKey? TokenProgram { get; set; }
 
-        public PublicKey SplAssociatedTokenAccount { get; set; }
+        public PublicKey? SplAssociatedTokenAccount { get; set; }
 
-        public PublicKey SystemProgram { get; set; }
+        public PublicKey? SystemProgram { get; set; }
 
-        public PublicKey Rent { get; set; }
+        public PublicKey? Rent { get; set; }
 
-        public PublicKey Amm { get; set; }
+        public PublicKey? Amm { get; set; }
 
-        public PublicKey AmmAuthority { get; set; }
+        public PublicKey? AmmAuthority { get; set; }
 
-        public PublicKey AmmOpenOrders { get; set; }
+        public PublicKey? AmmOpenOrders { get; set; }
 
-        public PublicKey LpMint { get; set; }
+        public PublicKey? LpMint { get; set; }
 
-        public PublicKey CoinMint { get; set; }
+        public PublicKey? CoinMint { get; set; }
 
-        public PublicKey PcMint { get; set; }
+        public PublicKey? PcMint { get; set; }
 
-        public PublicKey PoolCoinTokenAccount { get; set; }
+        public PublicKey? PoolCoinTokenAccount { get; set; }
 
-        public PublicKey PoolPcTokenAccount { get; set; }
+        public PublicKey? PoolPcTokenAccount { get; set; }
 
-        public PublicKey PoolWithdrawQueue { get; set; }
+        public PublicKey? PoolWithdrawQueue { get; set; }
 
-        public PublicKey AmmTargetOrders { get; set; }
+        public PublicKey? AmmTargetOrders { get; set; }
 
-        public PublicKey PoolTempLp { get; set; }
+        public PublicKey? PoolTempLp { get; set; }
 
-        public PublicKey SerumProgram { get; set; }
+        public PublicKey? SerumProgram { get; set; }
 
-        public PublicKey SerumMarket { get; set; }
+        public PublicKey? SerumMarket { get; set; }
 
-        public PublicKey UserWallet { get; set; }
+        public PublicKey? UserWallet { get; set; }
 
-        public PublicKey UserTokenCoin { get; set; }
+        public PublicKey? UserTokenCoin { get; set; }
 
-        public PublicKey UserTokenPc { get; set; }
+        public PublicKey? UserTokenPc { get; set; }
 
-        public PublicKey UserLpTokenAccount { get; set; }
-    }
-
-    public class MonitorStepAccounts
-    {
-        public PublicKey TokenProgram { get; set; }
-
-        public PublicKey Rent { get; set; }
-
-        public PublicKey Clock { get; set; }
-
-        public PublicKey Amm { get; set; }
-
-        public PublicKey AmmAuthority { get; set; }
-
-        public PublicKey AmmOpenOrders { get; set; }
-
-        public PublicKey AmmTargetOrders { get; set; }
-
-        public PublicKey PoolCoinTokenAccount { get; set; }
-
-        public PublicKey PoolPcTokenAccount { get; set; }
-
-        public PublicKey PoolWithdrawQueue { get; set; }
-
-        public PublicKey SerumProgram { get; set; }
-
-        public PublicKey SerumMarket { get; set; }
-
-        public PublicKey SerumCoinVaultAccount { get; set; }
-
-        public PublicKey SerumPcVaultAccount { get; set; }
-
-        public PublicKey SerumVaultSigner { get; set; }
-
-        public PublicKey SerumReqQ { get; set; }
-
-        public PublicKey SerumEventQ { get; set; }
-
-        public PublicKey SerumBids { get; set; }
-
-        public PublicKey SerumAsks { get; set; }
+        public PublicKey? UserLpTokenAccount { get; set; }
     }
 
     public class DepositAccounts
     {
-        public PublicKey TokenProgram { get; set; }
+        public PublicKey? TokenProgram { get; set; }
 
-        public PublicKey Amm { get; set; }
+        public PublicKey? Amm { get; set; }
 
-        public PublicKey AmmAuthority { get; set; }
+        public PublicKey? AmmAuthority { get; set; }
 
-        public PublicKey AmmOpenOrders { get; set; }
+        public PublicKey? AmmOpenOrders { get; set; }
 
-        public PublicKey AmmTargetOrders { get; set; }
+        public PublicKey? AmmTargetOrders { get; set; }
 
-        public PublicKey LpMintAddress { get; set; }
+        public PublicKey? LpMintAddress { get; set; }
 
-        public PublicKey PoolCoinTokenAccount { get; set; }
+        public PublicKey? PoolCoinTokenAccount { get; set; }
 
-        public PublicKey PoolPcTokenAccount { get; set; }
+        public PublicKey? PoolPcTokenAccount { get; set; }
 
-        public PublicKey SerumMarket { get; set; }
+        public PublicKey? SerumMarket { get; set; }
 
-        public PublicKey UserCoinTokenAccount { get; set; }
+        public PublicKey? UserCoinTokenAccount { get; set; }
 
-        public PublicKey UserPcTokenAccount { get; set; }
+        public PublicKey? UserPcTokenAccount { get; set; }
 
-        public PublicKey UserLpTokenAccount { get; set; }
+        public PublicKey? UserLpTokenAccount { get; set; }
 
-        public PublicKey UserOwner { get; set; }
+        public PublicKey? UserOwner { get; set; }
 
-        public PublicKey SerumEventQueue { get; set; }
+        public PublicKey? SerumEventQueue { get; set; }
     }
 
     public class WithdrawAccounts
     {
-        public PublicKey TokenProgram { get; set; }
+        public PublicKey? TokenProgram { get; set; }
 
-        public PublicKey Amm { get; set; }
+        public PublicKey? Amm { get; set; }
 
-        public PublicKey AmmAuthority { get; set; }
+        public PublicKey? AmmAuthority { get; set; }
 
-        public PublicKey AmmOpenOrders { get; set; }
+        public PublicKey? AmmOpenOrders { get; set; }
 
-        public PublicKey AmmTargetOrders { get; set; }
+        public PublicKey? AmmTargetOrders { get; set; }
 
-        public PublicKey LpMintAddress { get; set; }
+        public PublicKey? LpMintAddress { get; set; }
 
-        public PublicKey PoolCoinTokenAccount { get; set; }
+        public PublicKey? PoolCoinTokenAccount { get; set; }
 
-        public PublicKey PoolPcTokenAccount { get; set; }
+        public PublicKey? PoolPcTokenAccount { get; set; }
 
-        public PublicKey PoolWithdrawQueue { get; set; }
+        public PublicKey? PoolWithdrawQueue { get; set; }
 
-        public PublicKey PoolTempLpTokenAccount { get; set; }
+        public PublicKey? PoolTempLpTokenAccount { get; set; }
 
-        public PublicKey SerumProgram { get; set; }
+        public PublicKey? SerumProgram { get; set; }
 
-        public PublicKey SerumMarket { get; set; }
+        public PublicKey? SerumMarket { get; set; }
 
-        public PublicKey SerumCoinVaultAccount { get; set; }
+        public PublicKey? SerumCoinVaultAccount { get; set; }
 
-        public PublicKey SerumPcVaultAccount { get; set; }
+        public PublicKey? SerumPcVaultAccount { get; set; }
 
-        public PublicKey SerumVaultSigner { get; set; }
+        public PublicKey? SerumVaultSigner { get; set; }
 
-        public PublicKey UserLpTokenAccount { get; set; }
+        public PublicKey? UserLpTokenAccount { get; set; }
 
-        public PublicKey UerCoinTokenAccount { get; set; }
+        public PublicKey? UerCoinTokenAccount { get; set; }
 
-        public PublicKey UerPcTokenAccount { get; set; }
+        public PublicKey? UerPcTokenAccount { get; set; }
 
-        public PublicKey UserOwner { get; set; }
+        public PublicKey? UserOwner { get; set; }
 
-        public PublicKey SerumEventQ { get; set; }
+        public PublicKey? SerumEventQ { get; set; }
 
-        public PublicKey SerumBids { get; set; }
+        public PublicKey? SerumBids { get; set; }
 
-        public PublicKey SerumAsks { get; set; }
+        public PublicKey? SerumAsks { get; set; }
     }
-
-    public class MigrateToOpenBookAccounts
-    {
-        public PublicKey TokenProgram { get; set; }
-
-        public PublicKey SystemProgram { get; set; }
-
-        public PublicKey Rent { get; set; }
-
-        public PublicKey Amm { get; set; }
-
-        public PublicKey AmmAuthority { get; set; }
-
-        public PublicKey AmmOpenOrders { get; set; }
-
-        public PublicKey AmmTokenCoin { get; set; }
-
-        public PublicKey AmmTokenPc { get; set; }
-
-        public PublicKey AmmTargetOrders { get; set; }
-
-        public PublicKey SerumProgram { get; set; }
-
-        public PublicKey SerumMarket { get; set; }
-
-        public PublicKey SerumBids { get; set; }
-
-        public PublicKey SerumAsks { get; set; }
-
-        public PublicKey SerumEventQueue { get; set; }
-
-        public PublicKey SerumCoinVault { get; set; }
-
-        public PublicKey SerumPcVault { get; set; }
-
-        public PublicKey SerumVaultSigner { get; set; }
-
-        public PublicKey NewAmmOpenOrders { get; set; }
-
-        public PublicKey NewSerumProgram { get; set; }
-
-        public PublicKey NewSerumMarket { get; set; }
-
-        public PublicKey Admin { get; set; }
-    }
-
     public class SetParamsAccounts
     {
-        public PublicKey TokenProgram { get; set; }
+        public PublicKey? TokenProgram { get; set; }
 
-        public PublicKey Amm { get; set; }
+        public PublicKey? Amm { get; set; }
 
-        public PublicKey AmmAuthority { get; set; }
+        public PublicKey? AmmAuthority { get; set; }
 
-        public PublicKey AmmOpenOrders { get; set; }
+        public PublicKey? AmmOpenOrders { get; set; }
 
-        public PublicKey AmmTargetOrders { get; set; }
+        public PublicKey? AmmTargetOrders { get; set; }
 
-        public PublicKey AmmCoinVault { get; set; }
+        public PublicKey? AmmCoinVault { get; set; }
 
-        public PublicKey AmmPcVault { get; set; }
+        public PublicKey? AmmPcVault { get; set; }
 
-        public PublicKey SerumProgram { get; set; }
+        public PublicKey? SerumProgram { get; set; }
 
-        public PublicKey SerumMarket { get; set; }
+        public PublicKey? SerumMarket { get; set; }
 
-        public PublicKey SerumCoinVault { get; set; }
+        public PublicKey? SerumCoinVault { get; set; }
 
-        public PublicKey SerumPcVault { get; set; }
+        public PublicKey? SerumPcVault { get; set; }
 
-        public PublicKey SerumVaultSigner { get; set; }
+        public PublicKey? SerumVaultSigner { get; set; }
 
-        public PublicKey SerumEventQueue { get; set; }
+        public PublicKey? SerumEventQueue { get; set; }
 
-        public PublicKey SerumBids { get; set; }
+        public PublicKey? SerumBids { get; set; }
 
-        public PublicKey SerumAsks { get; set; }
+        public PublicKey? SerumAsks { get; set; }
 
-        public PublicKey AmmAdminAccount { get; set; }
+        public PublicKey? AmmAdminAccount { get; set; }
     }
 
     public class WithdrawPnlAccounts
     {
-        public PublicKey TokenProgram { get; set; }
+        public PublicKey? TokenProgram { get; set; }
 
-        public PublicKey Amm { get; set; }
+        public PublicKey? Amm { get; set; }
 
-        public PublicKey AmmConfig { get; set; }
+        public PublicKey? AmmConfig { get; set; }
 
-        public PublicKey AmmAuthority { get; set; }
+        public PublicKey? AmmAuthority { get; set; }
 
-        public PublicKey AmmOpenOrders { get; set; }
+        public PublicKey? AmmOpenOrders { get; set; }
 
-        public PublicKey PoolCoinTokenAccount { get; set; }
+        public PublicKey? PoolCoinTokenAccount { get; set; }
 
-        public PublicKey PoolPcTokenAccount { get; set; }
+        public PublicKey? PoolPcTokenAccount { get; set; }
 
-        public PublicKey CoinPnlTokenAccount { get; set; }
+        public PublicKey? CoinPnlTokenAccount { get; set; }
 
-        public PublicKey PcPnlTokenAccount { get; set; }
+        public PublicKey? PcPnlTokenAccount { get; set; }
 
-        public PublicKey PnlOwnerAccount { get; set; }
+        public PublicKey? PnlOwnerAccount { get; set; }
 
-        public PublicKey AmmTargetOrders { get; set; }
+        public PublicKey? AmmTargetOrders { get; set; }
 
-        public PublicKey SerumProgram { get; set; }
+        public PublicKey? SerumProgram { get; set; }
 
-        public PublicKey SerumMarket { get; set; }
+        public PublicKey? SerumMarket { get; set; }
 
-        public PublicKey SerumEventQueue { get; set; }
+        public PublicKey? SerumEventQueue { get; set; }
 
-        public PublicKey SerumCoinVaultAccount { get; set; }
+        public PublicKey? SerumCoinVaultAccount { get; set; }
 
-        public PublicKey SerumPcVaultAccount { get; set; }
+        public PublicKey? SerumPcVaultAccount { get; set; }
 
-        public PublicKey SerumVaultSigner { get; set; }
+        public PublicKey? SerumVaultSigner { get; set; }
     }
 
     public class WithdrawSrmAccounts
     {
-        public PublicKey TokenProgram { get; set; }
+        public PublicKey? TokenProgram { get; set; }
 
-        public PublicKey Amm { get; set; }
+        public PublicKey? Amm { get; set; }
 
-        public PublicKey AmmOwnerAccount { get; set; }
+        public PublicKey? AmmOwnerAccount { get; set; }
 
-        public PublicKey AmmAuthority { get; set; }
+        public PublicKey? AmmAuthority { get; set; }
 
-        public PublicKey SrmToken { get; set; }
+        public PublicKey? SrmToken { get; set; }
 
-        public PublicKey DestSrmToken { get; set; }
+        public PublicKey? DestSrmToken { get; set; }
     }
 
     public class SwapBaseInAccounts
     {
-        public PublicKey TokenProgram { get; set; }
+        public PublicKey? TokenProgram { get; set; }
 
-        public PublicKey Amm { get; set; }
+        public PublicKey? Amm { get; set; }
 
-        public PublicKey AmmAuthority { get; set; }
+        public PublicKey? AmmAuthority { get; set; }
 
-        public PublicKey AmmOpenOrders { get; set; }
+        public PublicKey? AmmOpenOrders { get; set; }
 
-        public PublicKey AmmTargetOrders { get; set; }
+        public PublicKey? AmmTargetOrders { get; set; }
 
-        public PublicKey PoolCoinTokenAccount { get; set; }
+        public PublicKey? BaseVaultAccount { get; set; }
 
-        public PublicKey PoolPcTokenAccount { get; set; }
+        public PublicKey? QuoteVaultAccount { get; set; }
 
-        public PublicKey SerumProgram { get; set; }
+        public PublicKey? SerumProgram { get; set; }
 
-        public PublicKey SerumMarket { get; set; }
+        public PublicKey? SerumMarket { get; set; }
 
-        public PublicKey SerumBids { get; set; }
+        public PublicKey? SerumBids { get; set; }
 
-        public PublicKey SerumAsks { get; set; }
+        public PublicKey? SerumAsks { get; set; }
 
-        public PublicKey SerumEventQueue { get; set; }
+        public PublicKey? SerumEventQueue { get; set; }
 
-        public PublicKey SerumCoinVaultAccount { get; set; }
+        public PublicKey? SerumCoinVaultAccount { get; set; }
 
-        public PublicKey SerumPcVaultAccount { get; set; }
+        public PublicKey? SerumPcVaultAccount { get; set; }
 
-        public PublicKey SerumVaultSigner { get; set; }
+        public PublicKey? SerumVaultSigner { get; set; }
 
-        public PublicKey UerSourceTokenAccount { get; set; }
+        public PublicKey? UerSourceTokenAccount { get; set; }
 
-        public PublicKey UerDestinationTokenAccount { get; set; }
+        public PublicKey? UerDestinationTokenAccount { get; set; }
 
-        public PublicKey UserSourceOwner { get; set; }
+        public PublicKey? UserSourceOwner { get; set; }
     }
 
     public class PreInitializeAccounts
     {
-        public PublicKey TokenProgram { get; set; }
+        public PublicKey? TokenProgram { get; set; }
 
-        public PublicKey SystemProgram { get; set; }
+        public PublicKey? SystemProgram { get; set; }
 
-        public PublicKey Rent { get; set; }
+        public PublicKey? Rent { get; set; }
 
-        public PublicKey AmmTargetOrders { get; set; }
+        public PublicKey? AmmTargetOrders { get; set; }
 
-        public PublicKey PoolWithdrawQueue { get; set; }
+        public PublicKey? PoolWithdrawQueue { get; set; }
 
-        public PublicKey AmmAuthority { get; set; }
+        public PublicKey? AmmAuthority { get; set; }
 
-        public PublicKey LpMintAddress { get; set; }
+        public PublicKey? LpMintAddress { get; set; }
 
-        public PublicKey CoinMintAddress { get; set; }
+        public PublicKey? CoinMintAddress { get; set; }
 
-        public PublicKey PcMintAddress { get; set; }
+        public PublicKey? PcMintAddress { get; set; }
 
-        public PublicKey PoolCoinTokenAccount { get; set; }
+        public PublicKey? PoolCoinTokenAccount { get; set; }
 
-        public PublicKey PoolPcTokenAccount { get; set; }
+        public PublicKey? PoolPcTokenAccount { get; set; }
 
-        public PublicKey PoolTempLpTokenAccount { get; set; }
+        public PublicKey? PoolTempLpTokenAccount { get; set; }
 
-        public PublicKey SerumMarket { get; set; }
+        public PublicKey? SerumMarket { get; set; }
 
-        public PublicKey UserWallet { get; set; }
+        public PublicKey? UserWallet { get; set; }
     }
 
     public class SwapBaseOutAccounts
     {
-        public PublicKey TokenProgram { get; set; }
+        public PublicKey? TokenProgram { get; set; }
 
-        public PublicKey Amm { get; set; }
+        public PublicKey? Amm { get; set; }
 
-        public PublicKey AmmAuthority { get; set; }
+        public PublicKey? AmmAuthority { get; set; }
 
-        public PublicKey AmmOpenOrders { get; set; }
+        public PublicKey? AmmOpenOrders { get; set; }
 
-        public PublicKey AmmTargetOrders { get; set; }
+        public PublicKey? AmmTargetOrders { get; set; }
 
-        public PublicKey PoolCoinTokenAccount { get; set; }
+        public PublicKey? PoolCoinTokenAccount { get; set; }
 
-        public PublicKey PoolPcTokenAccount { get; set; }
+        public PublicKey? PoolPcTokenAccount { get; set; }
 
-        public PublicKey SerumProgram { get; set; }
+        public PublicKey? SerumProgram { get; set; }
 
-        public PublicKey SerumMarket { get; set; }
+        public PublicKey? SerumMarket { get; set; }
 
-        public PublicKey SerumBids { get; set; }
+        public PublicKey? SerumBids { get; set; }
 
-        public PublicKey SerumAsks { get; set; }
+        public PublicKey? SerumAsks { get; set; }
 
-        public PublicKey SerumEventQueue { get; set; }
+        public PublicKey? SerumEventQueue { get; set; }
 
-        public PublicKey SerumCoinVaultAccount { get; set; }
+        public PublicKey? SerumCoinVaultAccount { get; set; }
 
-        public PublicKey SerumPcVaultAccount { get; set; }
+        public PublicKey? SerumPcVaultAccount { get; set; }
 
-        public PublicKey SerumVaultSigner { get; set; }
+        public PublicKey? SerumVaultSigner { get; set; }
 
-        public PublicKey UserSourceTokenAccount { get; set; }
+        public PublicKey? UserSourceTokenAccount { get; set; }
 
-        public PublicKey UserDestinationTokenAccount { get; set; }
+        public PublicKey? UserDestinationTokenAccount { get; set; }
 
-        public PublicKey UserSourceOwner { get; set; }
+        public PublicKey? UserSourceOwner { get; set; }
     }
 
-    public class SimulateInfoAccounts
-    {
-        public PublicKey Amm { get; set; }
 
-        public PublicKey AmmAuthority { get; set; }
-
-        public PublicKey AmmOpenOrders { get; set; }
-
-        public PublicKey PoolCoinTokenAccount { get; set; }
-
-        public PublicKey PoolPcTokenAccount { get; set; }
-
-        public PublicKey LpMintAddress { get; set; }
-
-        public PublicKey SerumMarket { get; set; }
-
-        public PublicKey SerumEventQueue { get; set; }
-    }
-
-    public class AdminCancelOrdersAccounts
-    {
-        public PublicKey TokenProgram { get; set; }
-
-        public PublicKey Amm { get; set; }
-
-        public PublicKey AmmAuthority { get; set; }
-
-        public PublicKey AmmOpenOrders { get; set; }
-
-        public PublicKey AmmTargetOrders { get; set; }
-
-        public PublicKey PoolCoinTokenAccount { get; set; }
-
-        public PublicKey PoolPcTokenAccount { get; set; }
-
-        public PublicKey AmmOwnerAccount { get; set; }
-
-        public PublicKey AmmConfig { get; set; }
-
-        public PublicKey SerumProgram { get; set; }
-
-        public PublicKey SerumMarket { get; set; }
-
-        public PublicKey SerumCoinVaultAccount { get; set; }
-
-        public PublicKey SerumPcVaultAccount { get; set; }
-
-        public PublicKey SerumVaultSigner { get; set; }
-
-        public PublicKey SerumEventQ { get; set; }
-
-        public PublicKey SerumBids { get; set; }
-
-        public PublicKey SerumAsks { get; set; }
-    }
-
-    public class CreateConfigAccountAccounts
-    {
-        public PublicKey Admin { get; set; }
-
-        public PublicKey AmmConfig { get; set; }
-
-        public PublicKey Owner { get; set; }
-
-        public PublicKey SystemProgram { get; set; }
-
-        public PublicKey Rent { get; set; }
-    }
-
-    public class UpdateConfigAccountAccounts
-    {
-        public PublicKey Admin { get; set; }
-
-        public PublicKey AmmConfig { get; set; }
-    }
-    public partial class WithdrawDestToken
-    {
-        public ulong WithdrawAmount { get; set; }
-
-        public ulong CoinAmount { get; set; }
-
-        public ulong PcAmount { get; set; }
-
-        public PublicKey DestTokenCoin { get; set; }
-
-        public PublicKey DestTokenPc { get; set; }
-
-        public int Serialize(byte[] _data, int initialOffset)
-        {
-            int offset = initialOffset;
-            _data.WriteU64(WithdrawAmount, offset);
-            offset += 8;
-            _data.WriteU64(CoinAmount, offset);
-            offset += 8;
-            _data.WriteU64(PcAmount, offset);
-            offset += 8;
-            _data.WritePubKey(DestTokenCoin, offset);
-            offset += 32;
-            _data.WritePubKey(DestTokenPc, offset);
-            offset += 32;
-            return offset - initialOffset;
-        }
-
-        public static int Deserialize(ReadOnlySpan<byte> _data, int initialOffset, out WithdrawDestToken result)
-        {
-            int offset = initialOffset;
-            result = new WithdrawDestToken();
-            result.WithdrawAmount = _data.GetU64(offset);
-            offset += 8;
-            result.CoinAmount = _data.GetU64(offset);
-            offset += 8;
-            result.PcAmount = _data.GetU64(offset);
-            offset += 8;
-            result.DestTokenCoin = _data.GetPubKey(offset);
-            offset += 32;
-            result.DestTokenPc = _data.GetPubKey(offset);
-            offset += 32;
-            return offset - initialOffset;
-        }
-    }
 
     public partial class TargetOrder
     {
