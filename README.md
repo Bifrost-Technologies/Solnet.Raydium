@@ -23,7 +23,7 @@ RaydiumAmmClient raydiumAmmClient = new RaydiumAmmClient(connection);
 
 Account trader = Account.FromSecretKey("SECRET KEY HERE");
 
-//SOL in lamports as the amountIn
+//amountIn must be in lamports
 //Minimum out can be 0 to always execute no matter what or set it specifically to apply a fixed slippage rate
 var swap_test = await raydiumAmmClient.SendSwapAsync(new PublicKey("POOL ADDRESS HERE"), SolHelper.ConvertToLamports(0.01m), 0, OrderSide.Buy, trader, trader);
 
